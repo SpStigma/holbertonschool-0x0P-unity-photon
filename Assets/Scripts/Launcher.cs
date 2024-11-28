@@ -7,6 +7,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     string gameVersion = "1";
     [SerializeField]
     private byte maxPlayerPerRoom = 4;
+    public GameObject prefabPlayer;
+    public Vector3 spawn = new Vector3(0, 1, 0);
 
     public override void OnConnectedToMaster()
     {
@@ -26,6 +28,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Now this client is in room");
+        if (PhotonNetwork.InRoom)
+        {
+            Debug.Log($"Nom de la room : {PhotonNetwork.CurrentRoom.Name}");
+            Debug.Log($"Nombre de joueurs dans la room : {PhotonNetwork.CurrentRoom.PlayerCount}");
+        }
+        PhotonNetwork.Instantiate(prefabPlayer.name, spawn, Quaternion.identity);
     }
 
     void Awake()
