@@ -5,20 +5,27 @@ using Photon.Realtime;
 public class Launcher : MonoBehaviourPunCallbacks
 {
     string gameVersion = "1";
+    [SerializeField]
+    private byte maxPlayerPerRoom = 4;
 
     public override void OnConnectedToMaster()
     {
-        base.OnConnectedToMaster();
+        PhotonNetwork.JoinRandomRoom();
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
-        base.OnDisconnected(cause);
+        Debug.LogWarningFormat("OnDisconnected() was called by PUN with reason {0}", cause);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom(null, new RoomOptions());
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayerPerRoom});
+    }
+    
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("Now this client is in room");
     }
 
     void Awake()
@@ -34,7 +41,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
-        //Check if we are connected if yes join a random room else connect to serv 
+        //Check if we are connected if yes join a random room else connect to serv
         if(PhotonNetwork.IsConnected)
         {
             PhotonNetwork.JoinRandomRoom();
